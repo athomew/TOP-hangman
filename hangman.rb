@@ -39,6 +39,13 @@ end
 def save game
   serialised_game = YAML::dump(game)
   save_file = File.open("saved_games.yaml", 'w')
-  save_file.puts serialised_game  
+  save_file.puts serialised_game
   save_file.close
+end
+
+def load
+  save_file = File.open("saved_games.yaml", "r")
+  game = YAML::load(save_file.read)
+  save_file.close
+  return game
 end
