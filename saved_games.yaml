@@ -1,9 +1,11 @@
---- !ruby/object:Game
-word: recesses
-guessed:
-- e
-right_guesses:
-- 1
-- 3
-- 6
-wrong_guesses: 0
+---
+- !ruby/object:Game
+  word: smallness
+  guessed:
+  - e
+  - a
+  right_guesses:
+  - 6
+  - 2
+  wrong_guesses: 0
+  save_name: hello

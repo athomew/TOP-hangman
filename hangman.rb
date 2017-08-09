@@ -17,7 +17,7 @@ class Game
     words = dictionary.scan(/\w+/)
     words.select! { |word| word.length >= 5 && word.length <=12 }
     words.map! { |word| word.downcase }
-    word = words[rand(0..(words.length - 1))]
+    word = words[rand(0...words.length)]
     return word
   end
 
@@ -40,18 +40,65 @@ class Game
   end
 end
 
+def get_saves
+  begin
+    save_file = File.open("saved_games.yaml", "r")
+    saves = YAML::load(save_file.read)
+    save_file.close
+  rescue
+    saves = []
+  end
+
+  return saves
+end
+
+
 def save game
-  serialised_game = YAML::dump(game)
+  saves = get_saves
+
+  while (true)
+    puts "\nPlease give your save a name:"
+    puts "\n"
+    name = gets.chomp
+    break unless (saves.any? { |save| save.save_name == name})
+    puts "\nThat name is already in use."
+  end
+
+  game.save_name = name
+
+  saves << game
+  new_saves = YAML::dump(saves)
   save_file = File.open("saved_games.yaml", 'w')
-  save_file.puts serialised_game
+  save_file.puts new_saves
   save_file.close
+
+  puts "\nGame saved!"
 end
 
 def load
-  save_file = File.open("saved_games.yaml", "r")
-  game = YAML::load(save_file.read)
-  save_file.close
-  return game
+  saves = get_saves
+
+  if (saves == [])
+    puts "\nThere are no previously saved games."
+    puts "\nStarting a new game."
+
+    return Game.new
+  end
+
+  while true
+    puts "\nWe have the following games in store:"
+    saves.each { |save| puts save.save_name }
+    puts "\nWhich one would you like to load?"
+    puts "\n"
+    name = gets.chomp
+
+    index_game = saves.find_index { |save| save.save_name == name }
+    break if index_game
+
+    puts "\nNo such game in memory."
+  end
+
+  return saves[index_game]
 end
 
 def word_status game
@@ -133,7 +180,7 @@ end
 # The game logic
 
 
-puts "\nWelcome to hangman: the game where losing means someone else dies!"
+puts "\nWelcome to Hangman: the game where losing means someone else dies!"
 game = Game.new
 
 while (true)
@@ -146,7 +193,7 @@ while (true)
     "Game loaded!"
     break
   elsif (want_to_load == "n")
-    "Alright. Starting a new game!"
+    "Starting a new game!"
     break
   else
     puts "Unknown command."
@@ -155,7 +202,7 @@ end
 
 puts "\nIn order to make a guess, type in a letter."
 puts "If at any point you want to save, just type 'save'."
-puts "If at any point you want to quit, just type 'quit'"
+puts "If at any point you want to quit, just type 'quit'."
 
 until(game.word_guessed? || (game.wrong_guesses == 6))
   display_hangman (game.wrong_guesses)
