@@ -1,12 +1,8 @@
 --- !ruby/object:Game
-word: furrow
+word: southerner
 guessed:
-- a
 - e
-- f
-- g
-- o
 right_guesses:
-- 0
-- 4
-wrong_guesses: 3
+- 5
+- 8
+wrong_guesses: 0

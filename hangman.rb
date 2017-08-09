@@ -54,7 +54,70 @@ def load
   return game
 end
 
+def word_status game
+  result = ""
+  game.word.length.times do |i|
+    if (game.right_guesses.include? i)
+      result << game.word[i]
+      result << " "
+    else
+      result << "_ "
+    end
+  end
+
+  return result
+end
+
+
 # The game logic
 
+
 puts "Welcome to hangman: the game where losing means someone else dies!"
-puts "Would you like to load a past game?"
+game = Game.new
+
+while (true)
+  puts "Would you like to load a past game? (Y/N)"
+  want_to_load = gets.chomp.downcase
+
+  if (want_to_load == "y")
+    game = load
+    "Game loaded!"
+    break
+  elsif (want_to_load == "n")
+    "Alright. Starting a new game!"
+    break
+  else
+    puts "Unknown command."
+  end
+end
+
+puts "In order to make a guess, type in a letter."
+puts "If at any point you want to save, just type 'save'."
+puts "If at any point you want to quit, just type 'quit'"
+
+until(game.word_guessed? || (game.wrong_guesses == 7))
+  puts "\nRemaining guesses: #{7-game.wrong_guesses}"
+
+  puts "\n"
+
+  puts word_status game
+
+  puts "\nAlready guessed: #{game.guessed}\n"
+
+  input = gets.chomp.downcase
+  if (input =~ /^[a-z]$/)
+    game.make_guess(input)
+  elsif (input == "save")
+    save game
+  elsif (input == "quit")
+    exit
+  else
+    puts "Unknown command."
+  end
+end
+
+if (game.word_guessed?)
+  puts "\nCongratulations! You've won!"
+else
+  puts "\nI'm sorry. The correct word was #{game.word}."
+end
