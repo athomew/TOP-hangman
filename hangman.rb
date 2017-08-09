@@ -33,6 +33,10 @@ class Game
       end
     end
   end
+
+  def word_guessed?
+    result = @right_guesses.sort == (0..(@word.length - 1)).to_a
+  end
 end
 
 
@@ -49,3 +53,8 @@ def load
   save_file.close
   return game
 end
+
+# The game logic
+
+puts "Welcome to hangman: the game where losing means someone else dies!"
+puts "Would you like to load a past game?"
