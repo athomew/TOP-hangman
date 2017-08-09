@@ -39,7 +39,6 @@ class Game
   end
 end
 
-
 def save game
   serialised_game = YAML::dump(game)
   save_file = File.open("saved_games.yaml", 'w')
@@ -75,14 +74,70 @@ def already_guessed game
   return result
 end
 
+
+def display_hangman guesses
+  case guesses
+  when 6
+    puts " ____  "
+    puts " |   o "
+    puts " |  /|\\"
+    puts " |  / \\"
+    puts " |     "
+    puts " ------"
+  when 5
+    puts " ____  "
+    puts " |   o "
+    puts " |  /|\\"
+    puts " |  /   "
+    puts " |     "
+    puts " ------"
+  when 4
+    puts " ____  "
+    puts " |   o "
+    puts " |  /|\\"
+    puts " |     "
+    puts " |     "
+    puts " ------"
+  when 3
+    puts " ____  "
+    puts " |   o "
+    puts " |  /| "
+    puts " |     "
+    puts " |     "
+    puts " ------"
+  when 2
+    puts " ____  "
+    puts " |   o "
+    puts " |   | "
+    puts " |     "
+    puts " |     "
+    puts " ------"
+  when 1
+    puts " ____  "
+    puts " |   o "
+    puts " |     "
+    puts " |     "
+    puts " |     "
+    puts " ------"
+  when 0
+    puts " ____  "
+    puts " |     "
+    puts " |     "
+    puts " |     "
+    puts " |     "
+    puts " ------"
+  end
+end
+
 # The game logic
 
 
-puts "Welcome to hangman: the game where losing means someone else dies!"
+puts "\nWelcome to hangman: the game where losing means someone else dies!"
 game = Game.new
 
 while (true)
-  puts "Would you like to load a past game? (Y/N)"
+  puts "\nWould you like to load a past game? (Y/N)"
+  puts "\n"
   want_to_load = gets.chomp.downcase
 
   if (want_to_load == "y")
@@ -97,12 +152,12 @@ while (true)
   end
 end
 
-puts "In order to make a guess, type in a letter."
+puts "\nIn order to make a guess, type in a letter."
 puts "If at any point you want to save, just type 'save'."
 puts "If at any point you want to quit, just type 'quit'"
 
-until(game.word_guessed? || (game.wrong_guesses == 7))
-  puts "\nRemaining guesses: #{7-game.wrong_guesses}"
+until(game.word_guessed? || (game.wrong_guesses == 6))
+  display_hangman (game.wrong_guesses)
 
   puts "\n"
 
@@ -127,7 +182,12 @@ until(game.word_guessed? || (game.wrong_guesses == 7))
 end
 
 if (game.word_guessed?)
+  puts "\n"
+
+  puts word_status game
+
   puts "\nCongratulations! You've won!"
 else
-  puts "\nI'm sorry. The correct word was #{game.word}."
+  display_hangman game.wrong_guesses
+  puts "\nI'm sorry. The correct word was '#{game.word}'  ."
 end
