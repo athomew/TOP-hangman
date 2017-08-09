@@ -68,6 +68,12 @@ def word_status game
   return result
 end
 
+def already_guessed game
+  result = "Already guessed:"
+  game.guessed.each { |x| result.concat(" #{x}") }
+
+  return result
+end
 
 # The game logic
 
@@ -102,7 +108,11 @@ until(game.word_guessed? || (game.wrong_guesses == 7))
 
   puts word_status game
 
-  puts "\nAlready guessed: #{game.guessed}\n"
+  puts "\n"
+
+  puts already_guessed game
+
+  puts "\n"
 
   input = gets.chomp.downcase
   if (input =~ /^[a-z]$/)
