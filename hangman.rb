@@ -1,14 +1,15 @@
-require 'yaml/store'
-store = YAML::Store.new("hangman-games.pstore")
+require 'yaml'
 
 class Game
   attr_reader :guessed, :wrong_guesses, :word, :right_guesses
+  attr_accessor :save_name
 
   def initialize
     @word = generate_word
     @guessed = []
     @right_guesses = []
     @wrong_guesses = 0
+    @save_name = "new-save"
   end
 
   def generate_word
